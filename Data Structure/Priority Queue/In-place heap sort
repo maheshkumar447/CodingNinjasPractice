@@ -1,0 +1,107 @@
+Code : In-place heap sort
+Send Feedback
+Given an integer array of size N. Sort this array (in decreasing order) using heap sort.
+Note: Space complexity should be O(1).
+Input Format:
+The first line of input contains an integer, that denotes the value of the size of the array or N.
+The following line contains N space separated integers, that denote the value of the elements of the array.
+Output Format :
+The first and only line of output contains array elements after sorting. The elements of the array in the output are separated by single space.
+Constraints :
+1 <= n <= 10^6
+Time Limit: 1 sec
+Sample Input 1:
+6 
+2 6 8 5 4 3
+Sample Output 1:
+8 6 5 4 3 2
+
+
+public class Solution {
+
+ private static void insertIntoVirtualHeap(int [] arr, int i){
+        int childIndex = i;  // jo index insert hoga wahi childIndex hoga isiliye i
+        int parentIndex = (childIndex-1)/2;   // parent ka index formulae se nikal liya
+
+        // now compare there priority
+        while(childIndex > 0){
+
+            if(arr[childIndex] < arr[parentIndex]){  // agar chota h child wala to swap krenge
+                int temp = arr[childIndex];
+                arr[childIndex] = arr[parentIndex];
+                arr[parentIndex] = temp;
+                // yahan tk swap ho gya
+                // ab aage hme childIndex or parentIndex ko update b krna h
+                childIndex = parentIndex;
+                parentIndex = (childIndex-1)/2;
+
+            }else{ // agar child wala chota nhi h to update krne ki jrurt nhi si return
+                return;
+            }
+        }
+    }
+
+// abhi tk hmare element virtual heap me store ho gye
+    // ab hme heap se nikal kr array me store krwane h jo b elements remove honge wo
+    // or wo store krwane h either descending order or ascemding order but here we store them in descending order
+
+    private static int removeMinFromVirtualHeap(int [] arr, int heapSize){
+        int temp = arr[0]; // jo element delete hoga
+        arr[0]  = arr[heapSize-1];  // last element ko first pe daal diya
+        heapSize--;  // heap ka size km krdiya ek se
+
+        int index = 0;
+        int leftChildIndex = 2*index + 1;
+        int rightChildIndex = 2*index + 2;
+
+        while(leftChildIndex < heapSize){
+
+            int minIndex = index;
+
+            if(arr[leftChildIndex] < arr[index]){
+                minIndex = leftChildIndex;
+            }
+            if( rightChildIndex  < heapSize &&arr[rightChildIndex] < arr[minIndex]){
+                minIndex = rightChildIndex;
+            }
+
+            if(minIndex == index){
+                break;
+            }
+
+            if(minIndex != index){  // mtlb shuru me minINdex ko index maana tha but wo chnge(left ya right min mil gya) ho gya to hum swap krenge
+                int temp1 = arr[index];
+                arr[index] = arr[minIndex];
+                arr[minIndex] = temp1;
+
+                index = minIndex;
+                leftChildIndex = 2*index +1;
+                rightChildIndex = 2*index+2;
+
+            }else{
+                    break;
+            }
+        }
+        return temp;
+    }
+
+	public static void inplaceHeapSort(int arr[]) {
+		/* Your class should be named Solution
+		* Don't write main().
+		* Don't read input, it is passed as function argument.
+		* Change in the given input itself.
+		* Taking input and printing output is handled automatically.
+		*/
+		  for(int i =0;i<arr.length;i++){
+            insertIntoVirtualHeap(arr, i);   
+        }
+        
+         for(int i =0;i< arr.length;i++){
+         arr[arr.length-1-i] =    removeMinFromVirtualHeap(arr,arr.length-i);  // is function ko chlane k liye hme 2 argument chyiea i.e. array  or heap ka size
+            // heap ka size shuru me array k size k brabar hoga or baad me jaise jaise elements niklege usi k acc km hota jayega
+            // yahan hmne array ka first element arr.length-1 index me store krwana h or 2nd element mtlb 1 index pr jo h wo arr.length-2 pr jo formula nikala hmne arr.length-1-i
+        }
+       
+	}
+}
+    
