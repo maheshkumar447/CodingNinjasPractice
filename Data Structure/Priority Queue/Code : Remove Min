@@ -1,0 +1,97 @@
+Code : Remove Min
+Send Feedback
+Implement the function RemoveMin for the min priority queue class.
+For a minimum priority queue, write the function for removing the minimum element present. Remove and return the minimum element.
+Note : main function is given for your reference which we are using internally to test the code.
+
+
+import java.util.ArrayList;
+
+public class PQ {
+
+	private ArrayList<Integer> heap;
+
+	public PQ() {
+		heap = new ArrayList<Integer>();
+	}
+
+	boolean isEmpty() {
+		return heap.size() == 0;
+	}
+
+	int size() {
+		return heap.size();
+	}
+
+	int getMin() throws PriorityQueueException {
+		if (isEmpty()) {
+			throw new PriorityQueueException();
+		}
+		return heap.get(0);
+	}
+
+	void insert(int element) {
+		heap.add(element);
+		int childIndex = heap.size() - 1;
+		int parentIndex = (childIndex - 1) / 2;
+
+		while (childIndex > 0) {
+			if (heap.get(childIndex) < heap.get(parentIndex)) {
+				int temp = heap.get(childIndex);
+				heap.set(childIndex, heap.get(parentIndex));
+				heap.set(parentIndex, temp);
+				childIndex = parentIndex;
+				parentIndex = (childIndex - 1) / 2;
+			} else {
+				return;
+			}
+		}
+	}
+
+	int removeMin() throws PriorityQueueException{
+		// Complete this function
+		// Throw the exception PriorityQueu	eException if queue is empty
+        
+        if(isEmpty()){
+            throw new PriorityQueueException();
+        }
+        
+        int ans = heap.get(0);
+        heap.set(0, heap.get(heap.size() - 1));
+        heap.remove(heap.size()-1);
+
+        int parentIndex = 0;
+        int leftChild = parentIndex * 2 + 1;
+        int rightChild = parentIndex * 2 + 2;
+
+        while(leftChild < heap.size() && rightChild < heap.size()){
+            int min = Math.min(heap.get(parentIndex), Math.min(heap.get(leftChild), heap.get(rightChild)));
+
+            if(min == heap.get(leftChild)){
+                int temp = heap.get(parentIndex);
+                heap.set(parentIndex, heap.get(leftChild));
+                heap.set(leftChild, temp);
+                parentIndex = leftChild;
+                leftChild = parentIndex * 2 + 1;
+                rightChild = parentIndex * 2 + 2;
+            }
+            else if(min == heap.get(rightChild)){
+                int temp = heap.get(parentIndex);
+                heap.set(parentIndex, heap.get(rightChild));
+                heap.set(rightChild, temp);
+                parentIndex = rightChild;
+                leftChild = parentIndex * 2 + 1;
+                rightChild = parentIndex * 2 + 2;
+            }
+            else{
+                return ans;
+            }
+        }
+         return ans;
+      
+	}
+}
+
+class PriorityQueueException extends Exception {
+
+}
